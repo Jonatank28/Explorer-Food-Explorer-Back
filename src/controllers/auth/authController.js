@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 
 class AuthController {
 
+    //! Login do usuário
     async login(req, res) {
         const { email, password } = req.body;
 
@@ -20,16 +21,41 @@ class AuthController {
             return res.status(400).json({ message: 'Senha e/ou email inválidos' });
         }
 
-        const token = jwt.sign({ id: user[0].userID }, process.env.JWT_PASS, { expiresIn: '8h' });
+        const token = jwt.sign({ id: user[0].userID }, process.env.JWT_PASS ?? '', { expiresIn: '8h' });
 
         const { password: _, ...userLogin } = user[0]
 
-        res.status(200).json({
+        return res.status(200).json({
             user: userLogin,
             token: token
         })
     }
 
+    //! Verifica se o token do usuário é válido
+    async loginVerifyToken(req, res) {
+        const { authorization } = req.headers
+
+        if (!authorization) {
+            return res.status(401).json({ message: "Não autorizado" })
+        }
+
+        const token = authorization.split(" ")[1]
+
+        const { id } = jwt.verify(token, process.env.JWT_PASS ?? '')
+
+        const sqlVerifyUser = `SELECT * FROM user WHERE userID = ?`;
+        const [user] = await db.promise().query(sqlVerifyUser, id);
+
+        if (user.length === 0) {
+            return res.status(400).json({ message: "Não autorizado" });
+        }
+
+        const { password: _, ...loggedUuser } = user[0]
+
+        return res.status(200).json(loggedUuser)
+    }
+
+    //! Faz registro de um novo usuário
     async register(req, res) {
         const { name, email, password } = req.body;
 
@@ -45,7 +71,7 @@ class AuthController {
         const newUSer = `INSERT INTO user (name, email, password) VALUES (?, ?, ?)`
         const [result] = await db.promise().query(newUSer, [name, email, hashPassword]);
 
-        res.status(201).json({ message: 'Usuário criado com sucesso' });
+        return res.status(201).json({ message: 'Usuário criado com sucesso' });
     }
 }
 
