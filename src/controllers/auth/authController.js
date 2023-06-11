@@ -1,7 +1,6 @@
 const db = require('../../services/db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
 class AuthController {
 
     //! Login do usuário
@@ -23,6 +22,7 @@ class AuthController {
             }
 
             const token = jwt.sign({ id: user[0].userID }, process.env.JWT_PASS ?? '', { expiresIn: '8h' });
+            // const token = jwt.sign({ id: user[0].userID }, process.env.JWT_PASS ?? '', { expiresIn: '5s' });
 
             const { password: _, ...userLogin } = user[0];
 
@@ -31,7 +31,6 @@ class AuthController {
                 token: token
             });
         } catch (error) {
-            // console.log(error);
             return res.status(500).json({ message: 'Erro ao realizar login' });
         }
     }
@@ -60,11 +59,13 @@ class AuthController {
 
             return res.status(200).json(loggedUser);
         } catch (error) {
-            // console.log("Token inválido");
-            return res.status(401).json({ message: "Não autorizado" });
+            if (error instanceof jwt.TokenExpiredError) {
+                return res.status(419).json({ message: 'Token expirado' });
+            } else {
+                return res.status(403).json({ message: 'Não autorizado' });
+            }
         }
     }
-
 
     //! Faz registro de um novo usuário
     async register(req, res) {
@@ -85,11 +86,9 @@ class AuthController {
 
             return res.status(201).json({ message: 'Usuário criado com sucesso' });
         } catch (error) {
-            // console.log(error);
             return res.status(500).json({ message: 'Erro ao criar usuário' });
         }
     }
-
 }
 
 module.exports = AuthController;
