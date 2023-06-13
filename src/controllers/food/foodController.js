@@ -36,8 +36,9 @@ class FoodController {
     }
 
     async getFoodSelect(req, res) {
+        const id = req.params.id;
         try {
-            const id = req.body.id;
+
             let data = {};
 
             const sqlFood = `SELECT * FROM food WHERE foodID = ?`;
