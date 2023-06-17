@@ -1,4 +1,17 @@
 const db = require('../../services/db');
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Pasta onde a imagem será salva
+    },
+    filename: (req, file, cb) => {
+        const fileName = Date.now() + '-' + file.originalname;
+        cb(null, fileName); // Nome do arquivo no destino
+    }
+});
+
+const upload = multer({ storage: storage });
 
 class FoodController {
     async getFood(req, res) {
@@ -59,9 +72,32 @@ class FoodController {
     }
 
     async createDish(req, res) {
-        const { data } = req.body;
+
+        const { data, formData } = req.body;
+        console.log("🚀 ~ formData:", formData)
         console.log("🚀 ~ data:", data)
+
+        res.status(200).json({ message: "Prato adicionado com sucesso" });
+
     }
 }
 
 module.exports = FoodController;
+
+
+
+
+
+
+
+
+
+
+// const sqlInsertFoot = `INSERT INTO food (name, description, value, path, categoriesID) VALUES (?, ?, ?, ?, ?)`;
+            // const [resultInsertFoot] = await db.promise().query(sqlInsertFoot, [
+            //     data.name,
+            //     data.description,
+            //     data.price,
+            //     imagePath, // Usando o caminho da imagem salva
+            //     data.category
+            // ]);
