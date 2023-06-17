@@ -21,7 +21,7 @@ class AuthController {
                 return res.status(400).json({ message: 'Senha e/ou email inválidos' });
             }
 
-            const token = jwt.sign({ id: user[0].userID }, process.env.JWT_PASS ?? '', { expiresIn: '8h' });
+            const token = jwt.sign({ id: user[0].userID }, process.env.JWT_PASS ?? '', { expiresIn: '9999999999999999h' });
             // const token = jwt.sign({ id: user[0].userID }, process.env.JWT_PASS ?? '', { expiresIn: '5s' });
 
             const { password: _, ...userLogin } = user[0];

@@ -57,6 +57,11 @@ class FoodController {
             res.status(500).json({ error: "Erro ao obter alimento selecionado" });
         }
     }
+
+    async createDish(req, res) {
+        const { data } = req.body;
+        console.log("🚀 ~ data:", data)
+    }
 }
 
 module.exports = FoodController;

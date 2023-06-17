@@ -6,7 +6,7 @@ const foodController = new FoodController();
 
 //! Traz todas as comidas do banco de dados
 foodRoutes.get('/foods', foodController.getFood);
-// foodRoutes.post('/foods', foodController.getFoodSelect);
+foodRoutes.post('/foods/create', foodController.createDish);
 foodRoutes.get('/foods-select/:id', foodController.getFoodSelect);
 
 
