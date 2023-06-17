@@ -1,7 +1,8 @@
 const db = require('../../services/db');
-// const multer = require('multer');
-// const uploadConfig = require('./src/configs/upload');
-// const upload = multer(uploadConfig.MULTER);
+const DiskStorage = require('../../providers/DiskStorage');
+const multer = require('multer');
+const uploadConfig = require('../../configs/upload');
+const upload = multer(uploadConfig.MULTER);
 class FoodController {
     async getFood(req, res) {
         try {
@@ -61,7 +62,34 @@ class FoodController {
     }
 
     async createDish(req, res) {
+        const dishImage = req.file.filename;
 
+        // res.status(200).json({ dishImage, name });
+
+
+        // const testeID = 12;
+
+        // // //! Verificar se o id ja tem foto
+        // const sqlSelect = `SELECT * FROM teste WHERE testeID = ?`;
+        // const [resultSelect] = await db.promise().query(sqlSelect, testeID);
+
+        // //! Se existir foto, deletar a foto antiga
+        // const oldDishImage = resultSelect[0].dishImage;
+
+        // const diskStorage = new DiskStorage();
+
+        // // //! Deletar foto antiga
+        // if (oldDishImage) {
+        //     await diskStorage.deleteFile(oldDishImage);
+        //     const sqlInsert = `INSERT INTO teste(dishImage) VALUES (?)`;
+        //     const [resultInsert] = await db.promise().query(sqlInsert, dishImage);
+        //     res.status(200).json({ resultInsert });
+        //     return
+        // }
+
+        const sqlInsert = `INSERT INTO teste(dishImage) VALUES (?)`;
+        const [resultInsert] = await db.promise().query(sqlInsert, dishImage);
+        res.status(200).json({ resultInsert });
 
     }
 }
