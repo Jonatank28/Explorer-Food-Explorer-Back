@@ -1,18 +1,7 @@
 const db = require('../../services/db');
-const multer = require('multer');
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Pasta onde a imagem será salva
-    },
-    filename: (req, file, cb) => {
-        const fileName = Date.now() + '-' + file.originalname;
-        cb(null, fileName); // Nome do arquivo no destino
-    }
-});
-
-const upload = multer({ storage: storage });
-
+// const multer = require('multer');
+// const uploadConfig = require('./src/configs/upload');
+// const upload = multer(uploadConfig.MULTER);
 class FoodController {
     async getFood(req, res) {
         try {
@@ -73,11 +62,6 @@ class FoodController {
 
     async createDish(req, res) {
 
-        const { data, formData } = req.body;
-        console.log("🚀 ~ formData:", formData)
-        console.log("🚀 ~ data:", data)
-
-        res.status(200).json({ message: "Prato adicionado com sucesso" });
 
     }
 }
