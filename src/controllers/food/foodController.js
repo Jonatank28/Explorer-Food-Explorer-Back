@@ -39,7 +39,7 @@ class FoodController {
 
             res.status(200).json(response);
         } catch (error) {
-            res.status(500).json({ error: "Erro ao obter alimentos" });
+            res.status(500).json({ error: "Erro ao obter pratos" });
         }
     }
 
@@ -72,7 +72,7 @@ class FoodController {
 
             res.status(200).json(data);
         } catch (error) {
-            res.status(500).json({ error: "Erro ao obter alimento selecionado" });
+            res.status(500).json({ error: "Erro ao obter prato selecionado" });
         }
     }
 
@@ -81,7 +81,7 @@ class FoodController {
         const dishImage = req.file.filename;
         const { name, description, category, price, tags } = req.body;
 
-        //! Insere o prato no banco de dados
+        //! Insere o prato no banco de dados na tabela food
         try {
             const sqlInsert = `INSERT INTO food(name, description, categoriesID, value, path) VALUES (?, ?, ?, ?, ?)`;
             const [resultInsert] = await db.promise().query(sqlInsert, [name, description, category, price, dishImage]);
@@ -109,6 +109,7 @@ class FoodController {
                 })
             );
 
+            //! Insere as tags no banco de dados na tabela food_ingredients
             await Promise.all(
                 tagsIds.map(async (tagId) => {
                     const sqlInsertTag = `INSERT INTO food_ingredients(foodID, ingredientsID) VALUES (?, ?)`;
