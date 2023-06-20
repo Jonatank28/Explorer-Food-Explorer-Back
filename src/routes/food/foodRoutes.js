@@ -13,6 +13,8 @@ const foodController = new FoodController();
 //! Traz todas as comidas do banco de dados
 foodRoutes.get('/foods', foodController.getFood);
 foodRoutes.patch('/foods/create', upload.single('dishImage'), foodController.createDish);
+foodRoutes.put('/foods/update/:id', upload.single('dishImage'), foodController.updateDish);
+
 foodRoutes.get('/foods-select/:id', foodController.getFoodSelect);
 
 
