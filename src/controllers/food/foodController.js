@@ -194,6 +194,43 @@ class FoodController {
         );
         res.status(200).json({ message: "Prato atualizado com sucesso" });
     }
+
+    //! Deleta um prato
+    async deleteDish(req, res) {
+        const { id } = req.params;
+        // deletar prato da tabela food e food_ingredients e também deletar a foto do prato
+        try {
+            const sqlSelectPreviousPhoto = `SELECT path FROM food WHERE foodID = ?`;
+            const sqlDeleteDish = `DELETE FROM food WHERE foodID = ?`;
+            const sqlDeleteDishIngredients = `DELETE FROM food_ingredients WHERE foodID = ?`;
+
+            //! Obter o nome da foto de perfil anterior
+            const [rows] = await db.promise().query(sqlSelectPreviousPhoto, [id]);
+            const previousPhotoProfile = rows[0]?.path;
+
+            //! Excluir a foto de perfil anterior
+            if (previousPhotoProfile) {
+                const previousPhotoPath = path.resolve('uploads/', previousPhotoProfile);
+                fs.unlink(previousPhotoPath, (error) => {
+                    if (error) {
+                        return console.error('Erro ao excluir a imagem anterior:', error);
+                    } else {
+                        return console.log('Imagem anterior excluída com sucesso!');
+                    }
+                });
+            }
+
+            //! Deletar o prato
+            await db.promise().query(sqlDeleteDish, [id]);
+            await db.promise().query(sqlDeleteDishIngredients, [id]);
+
+            console.log("prato deletado com sucesso")
+
+            res.status(200).json({ message: "Prato deletado com sucesso" });
+        } catch (error) {
+            res.status(500).json({ error: "Erro ao deletar o prato" });
+        }
+    }
 }
 
 module.exports = FoodController;
