@@ -94,7 +94,7 @@ class FoodController {
 
             //! Verifica se a tag já existe no banco de dados e insere caso não exista e retorna todos os ids das tags
             const tagsIds = await Promise.all(
-                tags.map(async (currentTag) => {
+                tags?.map(async (currentTag) => {
                     const existingTag = existingTags.find((tag) => tag === currentTag);
 
                     if (!existingTag) {
