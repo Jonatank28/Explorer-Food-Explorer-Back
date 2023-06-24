@@ -195,6 +195,22 @@ class FoodController {
         res.status(200).json({ message: "Prato atualizado com sucesso" });
     }
 
+    //! Atualiza o status do prato (favorito ou não)
+    async updateFavorite(req, res) {
+        try {
+            const { id } = req.params;
+            const sqlSelectFavorite = `SELECT favorite FROM food WHERE foodID = ?`;
+            const [rows] = await db.promise().query(sqlSelectFavorite, [id]);
+            const favorite = rows[0]?.favorite;
+            const sqlUpdateFavorite = `UPDATE food SET favorite = ? WHERE foodID = ?`;
+            const [resultUpdate] = await db.promise().query(sqlUpdateFavorite, [!favorite, id]);
+            res.status(200).json({ message: "Status do prato atualizado com sucesso" });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: "Erro ao atualizar o status do prato" });
+        }
+    }
+
     //! Deleta um prato
     async deleteDish(req, res) {
         const { id } = req.params;

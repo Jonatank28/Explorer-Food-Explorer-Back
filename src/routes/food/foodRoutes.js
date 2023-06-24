@@ -14,6 +14,7 @@ const foodController = new FoodController();
 foodRoutes.get('/foods', foodController.getFood);
 foodRoutes.patch('/foods/create', upload.single('dishImage'), foodController.createDish);
 foodRoutes.put('/foods/update/:id', upload.single('dishImage'), foodController.updateDish);
+foodRoutes.put('/foods/update/favorite/:id', foodController.updateFavorite);
 foodRoutes.delete('/foods/delete/:id', foodController.deleteDish);
 
 foodRoutes.get('/foods-select/:id', foodController.getFoodSelect);
