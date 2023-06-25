@@ -47,11 +47,9 @@ class FoodController {
 
     //! Lista um prato selecionado
     async getFoodSelect(req, res) {
-        const id = req.params.id;
         try {
-
+            const id = req.params.id;
             let data = {};
-
             const sqlFood = `SELECT * FROM food WHERE foodID = ?`;
             const [resultFood] = await db.promise().query(sqlFood, id);
 
@@ -239,8 +237,6 @@ class FoodController {
             //! Deletar o prato
             await db.promise().query(sqlDeleteDish, [id]);
             await db.promise().query(sqlDeleteDishIngredients, [id]);
-
-            console.log("prato deletado com sucesso")
 
             res.status(200).json({ message: "Prato deletado com sucesso" });
         } catch (error) {

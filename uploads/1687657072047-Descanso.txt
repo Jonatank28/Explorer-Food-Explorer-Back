@@ -1,0 +1,8 @@
+1 - Verificar para só vim as turmas ativas no relatório de freguencia das turmas personalizado.
+2 - Personalizado 904 - aparecer apenas os profisisonais ativos/ ver oq é o null/ apareceu o null quando emitido no nome da profissional cassiane
+3 - 208, REVISAR ESTÁ COM ERRO
+4 - Relatório que traga a os dados da atividade por dia do scfv, solicitado pela andressa
+5 - sugestão para colocar profissional participante antes de dar o primeiro confirmar.
+6 - sugestão para filtrar no histórico de atendimentos do cidadão abertas/finalizadas/canceladas
+7- verificar as permissão da secretaria, ela só pode ver relatórios que não contém dados de exposição de cidadoes, nome, CPF, ..etc. Secretaria é a Andressa
+8 - ajustar personalizado 301.
