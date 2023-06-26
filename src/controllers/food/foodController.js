@@ -7,11 +7,18 @@ class FoodController {
     //! Lista todos os pratos
     async getFood(req, res) {
         try {
+            const id = req.params.id
             const sqlCategories = `SELECT * FROM categories`;
             const [resultCategories] = await db.promise().query(sqlCategories);
 
-            const sqlFood = `SELECT * FROM food`;
-            const [resultFood] = await db.promise().query(sqlFood);
+            const sqlFood = `
+                SELECT 
+                    a.*, 
+                    (SELECT b.favorite FROM food_user_favorite AS b WHERE b.userID = ? AND b.foodID = a.foodID LIMIT 1) AS favorite
+                    FROM food as a`
+                ;
+
+            const [resultFood] = await db.promise().query(sqlFood, id);
 
             const categorizedFood = {};
 
@@ -196,13 +203,21 @@ class FoodController {
     //! Atualiza o status do prato (favorito ou não)
     async updateFavorite(req, res) {
         try {
-            const { id } = req.params;
-            const sqlSelectFavorite = `SELECT favorite FROM food WHERE foodID = ?`;
-            const [rows] = await db.promise().query(sqlSelectFavorite, [id]);
-            const favorite = rows[0]?.favorite;
-            const sqlUpdateFavorite = `UPDATE food SET favorite = ? WHERE foodID = ?`;
-            const [resultUpdate] = await db.promise().query(sqlUpdateFavorite, [!favorite, id]);
-            res.status(200).json({ message: "Status do prato atualizado com sucesso" });
+            const { id, userID } = req.params;
+            const sqlSelectFavorite = `SELECT favorite FROM food_user_favorite WHERE foodID = ? AND userID = ?`;
+            const [resultSelectFavorite] = await db.promise().query(sqlSelectFavorite, [id, userID]);
+            const favorite = resultSelectFavorite[0]?.favorite;
+            // se favorite for null insere o prato na tabela food_user_favorite com o status de favorito e se não for null atualiza o status do prato
+            if (!favorite) {
+                const sqlInsertFavorite = `INSERT INTO food_user_favorite (foodID, userID, favorite) VALUES (?, ?, ?)`;
+                await db.promise().query(sqlInsertFavorite, [id, userID, 1]);
+                res.status(200).json({ message: "Prato adicionado aos favoritos" });
+            } else {
+                const sqlDeleteFavorite = `DELETE FROM food_user_favorite WHERE foodID = ? AND userID = ?`;
+                await db.promise().query(sqlDeleteFavorite, [id, userID]);
+                res.status(200).json({ message: "Prato removido dos favoritos" });
+            }
+
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: "Erro ao atualizar o status do prato" });
